@@ -4,16 +4,18 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\User;
+use App\Models\Permission;
+use App\Models\PermissionRole;
+use App\Models\Role;
 
-class UserFactory extends Factory
+class PermissionRoleFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = User::class;
+    protected $model = PermissionRole::class;
 
     /**
      * Define the model's default state.
@@ -21,9 +23,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->safeEmail(),
-            'password' => $this->faker->password(),
+            'permission_id' => Permission::factory(),
+            'role_id' => Role::factory(),
         ];
     }
 }

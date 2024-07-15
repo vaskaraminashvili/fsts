@@ -1,0 +1,37 @@
+created:
+    - database/factories/UserFactory.php
+    - database/factories/CategoryFactory.php
+    - database/factories/TicketFactory.php
+    - database/factories/RoleFactory.php
+    - database/factories/PermissionFactory.php
+    - database/factories/PermissionRoleFactory.php
+    - database/factories/RoleUserFactory.php
+    - database/factories/CategoryTicketFactory.php
+    - database/migrations/2024_07_15_182233_create_users_table.php
+    - database/migrations/2024_07_15_182234_create_categories_table.php
+    - database/migrations/2024_07_15_182235_create_tickets_table.php
+    - database/migrations/2024_07_15_182236_create_roles_table.php
+    - database/migrations/2024_07_15_182237_create_permissions_table.php
+    - database/migrations/2024_07_15_182238_create_permission_roles_table.php
+    - database/migrations/2024_07_15_182239_create_role_users_table.php
+    - database/migrations/2024_07_15_182240_create_category_tickets_table.php
+    - database/migrations/2024_07_15_182241_create_role_user_table.php
+    - database/migrations/2024_07_15_182242_create_category_ticket_table.php
+    - database/migrations/2024_07_15_182243_create_permission_role_table.php
+    - app/Models/User.php
+    - app/Models/Category.php
+    - app/Models/Ticket.php
+    - app/Models/Role.php
+    - app/Models/Permission.php
+    - app/Models/PermissionRole.php
+    - app/Models/RoleUser.php
+    - app/Models/CategoryTicket.php
+models:
+    User: { id: id, name: string, email: string, password: string, relationships: { belongsToMany: Role } }
+    Category: { id: id, name: string, slug: string, is_active: boolean, relationships: { belongsToMany: Ticket } }
+    Ticket: { id: id, title: string, description: text, priority: 'enum:Low,Medium,High', status: 'enum:Open,Closed,Solved', comment: text, assigned_by: 'id foreign:users', assigned_to: 'id foreign:users', relationships: { belongsToMany: Category } }
+    Role: { id: id, title: string, relationships: { belongsToMany: 'User, Permission' } }
+    Permission: { id: id, title: string, relationships: { belongsToMany: Role } }
+    PermissionRole: { permission_id: 'id foreign:permissions', role_id: 'id foreign:roles' }
+    RoleUser: { role_id: 'id foreign:roles', user_id: 'id foreign:users' }
+    CategoryTicket: { category_id: 'id foreign:categories', ticket_id: 'id foreign:ticketsx' }

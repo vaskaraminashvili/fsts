@@ -1,0 +1,52 @@
+models:
+  User:
+    id: id
+    name: string
+    email: string
+    password: string
+    relationships:
+      belongsToMany: Role
+
+  Category:
+    id: id
+    name: string
+    slug: string
+    is_active: boolean
+    relationships:
+      belongsToMany: Ticket
+
+  Ticket:
+    id: id
+    title: string
+    description: text
+    priority: enum:Low,Medium,High
+    status: enum:Open,Closed,Solved
+    comment: text
+    assigned_by: id foreign:users
+    assigned_to: id foreign:users
+    relationships:
+      belongsToMany: Category
+
+  Role:
+    id: id
+    title: string
+    relationships:
+      belongsToMany: User, Permission
+
+  Permission:
+    id: id
+    title: string
+    relationships:
+      belongsToMany: Role
+
+  PermissionRole:
+    permission_id: id foreign:permissions
+    role_id: id foreign:roles
+
+  RoleUser:
+    role_id: id foreign:roles
+    user_id: id foreign:users
+
+  CategoryTicket:
+    category_id: id foreign:categories
+    ticket_id: id foreign:ticketsx

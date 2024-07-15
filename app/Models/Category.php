@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class User extends Model
+class Category extends Model
 {
     use HasFactory;
 
@@ -17,17 +17,8 @@ class User extends Model
      */
     protected $fillable = [
         'name',
-        'email',
-        'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
+        'slug',
+        'is_active',
     ];
 
     /**
@@ -37,10 +28,11 @@ class User extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'is_active' => 'boolean',
     ];
 
-    public function roles(): BelongsToMany
+    public function tickets(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Ticket::class);
     }
 }

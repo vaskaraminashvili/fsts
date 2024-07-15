@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class User extends Model
+class PermissionRole extends Model
 {
     use HasFactory;
 
@@ -16,18 +16,8 @@ class User extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
+        'permission_id',
+        'role_id',
     ];
 
     /**
@@ -37,10 +27,17 @@ class User extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'permission_id' => 'integer',
+        'role_id' => 'integer',
     ];
 
-    public function roles(): BelongsToMany
+    public function permission(): BelongsTo
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsTo(Permission::class);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 }
