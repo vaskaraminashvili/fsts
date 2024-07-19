@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ticket extends Model
 {
+
     use HasFactory;
 
     /**
@@ -16,26 +17,28 @@ class Ticket extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'title',
-        'description',
-        'priority',
-        'status',
-        'comment',
-        'assigned_by',
-        'assigned_to',
-    ];
+    protected $fillable
+        = [
+            'title',
+            'description',
+            'priority',
+            'status',
+            'comment',
+            'assigned_by',
+            'assigned_to',
+        ];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = [
-        'id' => 'integer',
-        'assigned_by' => 'integer',
-        'assigned_to' => 'integer',
-    ];
+    //    protected $casts
+    //        = [
+    //            'id'          => 'integer',
+    //            'assigned_by' => 'integer',
+    //            'assigned_to' => 'integer',
+    //        ];
 
     public function categories(): BelongsToMany
     {
@@ -49,6 +52,7 @@ class Ticket extends Model
 
     public function assignedTo(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'assigned_to', 'id');
     }
+
 }
