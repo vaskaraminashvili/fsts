@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Enums\Priority;
 use App\Filament\Enums\Status;
+use App\Filament\Resources\TickerResource\RelationManagers\CategoriesRelationManager;
 use App\Filament\Resources\TicketResource\Pages;
 use App\Filament\Resources\TicketResource\RelationManagers;
 use App\Models\Ticket;
@@ -33,10 +34,12 @@ class TicketResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\Select::make('status')
                     ->options(Status::class)
-                    ->required(),
+                    ->required()
+                    ->in(Status::class),
                 Forms\Components\Select::make('priority')
                     ->required()
-                    ->options(Priority::class),
+                    ->options(Priority::class)
+                    ->in(Priority::class),
                 Forms\Components\Textarea::make('comment')
                     ->columnSpanFull(),
                 Forms\Components\Select::make('assigned_to')
@@ -48,18 +51,24 @@ class TicketResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('asssigned_to')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('assigned_by')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('title')
+                    ->description(function (Ticket $ticket) {
+                        return $ticket->description;
+                    })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('priority')
+                    ->badge()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('assignedTo.name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('assignedBy.name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextInputColumn::make('comment'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -74,6 +83,7 @@ class TicketResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -85,7 +95,7 @@ class TicketResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CategoriesRelationManager::class,
         ];
     }
 
