@@ -4,11 +4,14 @@ namespace App\Models;
 
 use App\Filament\Enums\Priority;
 use App\Filament\Enums\Status;
+use App\Observers\TicketObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+#[ObservedBy([TicketObserver::class])]
 class Ticket extends Model
 {
 
