@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Filament\Enums\Priority;
+use App\Filament\Enums\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,12 +35,14 @@ class Ticket extends Model
      *
      * @var array
      */
-    //    protected $casts
-    //        = [
-    //            'id'          => 'integer',
-    //            'assigned_by' => 'integer',
-    //            'assigned_to' => 'integer',
-    //        ];
+    protected $casts
+        = [
+            'id'          => 'integer',
+            'assigned_by' => 'integer',
+            'assigned_to' => 'integer',
+            'priority'    => Priority::class,
+            'status'      => Status::class,
+        ];
 
     public function categories(): BelongsToMany
     {

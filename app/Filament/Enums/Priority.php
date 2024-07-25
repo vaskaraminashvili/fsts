@@ -9,4 +9,13 @@ enum Priority: string
     case MEDIUM = 'Medium';
     case HIGH = 'High';
 
+    public function getColor(): string
+    {
+        return match ($this) {
+            self::LOW => 'info',
+            self::MEDIUM => 'warning',
+            self::HIGH => 'danger',
+        };
+    }
+
 }
