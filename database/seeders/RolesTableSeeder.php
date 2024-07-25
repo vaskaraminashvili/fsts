@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,11 +14,11 @@ class RolesTableSeeder extends Seeder
         $roles = [
             [
                 'id'    => 1,
-                'title' => 'admin',
+                'title' => Role::ROLES['Admin'],
             ],
             [
                 'id'    => 2,
-                'title' => 'user',
+                'title' => Role::ROLES['User'],
             ],
         ];
 

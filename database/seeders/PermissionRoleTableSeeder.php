@@ -12,7 +12,12 @@ class PermissionRoleTableSeeder extends Seeder
     public function run(): void
     {
         $admin_permissions = Permission::all();
-        $user_permissions = Permission::where('title', 'LIKE', 'ticket_%')
+        $user_permissions = Permission::whereIn('title', [
+            'category_access',
+            'category_show',
+            'ticket_access',
+            'ticket_show',
+        ])
             ->get();
 
         Role::findOrFail(1)

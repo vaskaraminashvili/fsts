@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class  CategoriesRelationManager extends RelationManager
 {
@@ -27,6 +28,9 @@ class  CategoriesRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\AttachAction::make()
                     ->attachAnother(false)
+                    ->recordSelectOptionsQuery(function (Builder $query) {
+                        return $query->isActive();
+                    })
                     ->recordSelect(function (Select $select) {
                         return $select->placeholder('Select Category Please');
                     })

@@ -7,12 +7,15 @@ use App\Filament\Enums\Status;
 use App\Filament\Resources\TickerResource\RelationManagers\CategoriesRelationManager;
 use App\Filament\Resources\TicketResource\Pages;
 use App\Filament\Resources\TicketResource\RelationManagers;
+use App\Models\Role;
 use App\Models\Ticket;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TicketResource extends Resource
 {
@@ -34,16 +37,20 @@ class TicketResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\Select::make('status')
                     ->options(Status::class)
-                    ->required()
-                    ->in(Status::class),
+                    ->required(),
                 Forms\Components\Select::make('priority')
                     ->required()
-                    ->options(Priority::class)
-                    ->in(Priority::class),
+                    ->options(Priority::class),
                 Forms\Components\Textarea::make('comment')
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                ,
                 Forms\Components\Select::make('assigned_to')
-                    ->relationship('assignedTo', 'name'),
+                    ->relationship('assignedTo', 'name',
+                        function (Builder $query) {
+                            return $query->whereHas('roles', function ($query) {
+                                return $query->where('id', 2);
+                            });
+                        }),
             ]);
     }
 
@@ -53,7 +60,7 @@ class TicketResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->description(function (Ticket $ticket) {
-                        return $ticket->description;
+                        return $ticket?->description ?? null;
                     })
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
@@ -68,7 +75,8 @@ class TicketResource extends Resource
                 Tables\Columns\TextColumn::make('assignedBy.name')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextInputColumn::make('comment'),
+                Tables\Columns\TextInputColumn::make('comment')
+                    ->disabled(!auth()->user()->hasPermission('ticket_edit')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -78,8 +86,10 @@ class TicketResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at')
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options(Status::class),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -87,9 +97,19 @@ class TicketResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->hidden(!auth()
+                            ->user()
+                            ->hasPermission('category_delete')),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                if (auth()->user()->hasRole(Role::ROLES['Admin'])) {
+                    return $query;
+                } else {
+                    return $query->where('assigned_to', auth()->id());
+                }
+            });
     }
 
     public static function getRelations(): array

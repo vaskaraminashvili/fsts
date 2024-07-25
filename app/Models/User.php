@@ -44,11 +44,6 @@ class User extends Authenticatable
             'id' => 'integer',
         ];
 
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class);
-    }
-
     public function hasPermission(string $permission): bool
     {
         $permissionsArray = [];
@@ -58,6 +53,16 @@ class User extends Authenticatable
             }
         }
         return collect($permissionsArray)->unique()->contains($permission);
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->roles()->where('title', $role)->exists();
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
     }
 
 }

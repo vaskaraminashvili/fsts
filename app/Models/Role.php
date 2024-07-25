@@ -8,25 +8,34 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Role extends Model
 {
+
     use HasFactory;
+
+    const ROLES
+        = [
+            'Admin' => 'admin',
+            'User'  => 'user',
+        ];
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'title',
-    ];
+    protected $fillable
+        = [
+            'title',
+        ];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = [
-        'id' => 'integer',
-    ];
+    protected $casts
+        = [
+            'id' => 'integer',
+        ];
 
     public function users(): BelongsToMany
     {
@@ -37,4 +46,5 @@ class Role extends Model
     {
         return $this->belongsToMany(Permission::class);
     }
+
 }

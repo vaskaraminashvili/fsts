@@ -26,7 +26,7 @@ class CategoryResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->live(debounce: 500)
                     ->required()
-                    ->unique()
+                    ->unique(ignoreRecord: true)
                     ->autofocus()
                     ->maxLength(255)
                     ->afterStateUpdated(function (Set $set, ?string $state) {
@@ -50,6 +50,7 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\ToggleColumn::make('is_active')
+                    ->disabled(!auth()->user()->hasPermission('category_edit'))
                     ->label('Status'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -64,12 +65,16 @@ class CategoryResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->slideOver(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->hidden(!auth()
+                            ->user()
+                            ->hasPermission('category_delete')),
                 ]),
             ]);
     }
@@ -84,9 +89,9 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'edit'   => Pages\EditCategory::route('/{record}/edit'),
+            'index' => Pages\ListCategories::route('/'),
+            //            'create' => Pages\CreateCategory::route('/create'),
+            //            'edit'   => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 
