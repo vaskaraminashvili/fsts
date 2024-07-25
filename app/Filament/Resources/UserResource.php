@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class UserResource extends Resource
@@ -30,8 +31,9 @@ class UserResource extends Resource
                     ->required()
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('password')
-                    ->visible(fn($livewire) => $livewire instanceof
-                        Pages\CreateUser)
+                    //                    ->visible(fn($livewire) => $livewire instanceof
+                    //                        Pages\CreateUser)
+                    ->hiddenOn(['edit'])
                     ->required()
                     ->password(),
             ]);
@@ -47,9 +49,13 @@ class UserResource extends Resource
                 TextColumn::make('email')
                     ->searchable()
                     ->searchable(),
+                TextColumn::make('roles.title')
+                    ->badge(),
             ])
             ->filters([
-                //
+                SelectFilter::make('role')
+                    ->relationship('roles', 'title')
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

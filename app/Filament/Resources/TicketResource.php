@@ -63,12 +63,8 @@ class TicketResource extends Resource
                         return $ticket?->description ?? null;
                     })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->badge()
-                    ->color(function ($state) {
-                        return $state->getColor();
-                    })
-                    ->searchable(),
+                Tables\Columns\SelectColumn::make('status')
+                    ->options(Status::class),
                 Tables\Columns\TextColumn::make('priority')
                     ->color(function ($state
                     ) { // field must be cast as that enum
